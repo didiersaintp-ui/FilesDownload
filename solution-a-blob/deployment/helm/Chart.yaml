@@ -1,0 +1,6 @@
+apiVersion: v2
+name: devicemanifest-api-blob
+description: Device Manifest API with Azure Blob Storage (Solution A)
+type: application
+version: 1.0.0
+appVersion: "1.0.0"

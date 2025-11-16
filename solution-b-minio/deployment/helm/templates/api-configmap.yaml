@@ -1,0 +1,12 @@
+{{- if .Values.api.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "devicemanifest-solution-b.fullname" . }}-api-config
+  labels:
+    {{- include "devicemanifest-solution-b.labels" . | nindent 4 }}
+data:
+  endpoint: {{ .Values.api.config.minio.endpoint | quote }}
+  useSSL: {{ .Values.api.config.minio.useSSL | quote }}
+  bucketName: {{ .Values.api.config.minio.bucketName | quote }}
+{{- end }}

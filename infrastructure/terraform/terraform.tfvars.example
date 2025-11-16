@@ -1,0 +1,18 @@
+# Azure region
+location = "eastus"
+
+# Storage account name (must be globally unique, 3-24 lowercase alphanumeric)
+# Example: "stdevicemanifestpoc001"
+storage_account_name = "YOUR_UNIQUE_STORAGE_NAME"
+
+# Tags
+tags = {
+  Environment = "POC"
+  Project     = "DeviceManifest"
+  ManagedBy   = "Terraform"
+}
+
+# Optional overrides
+# cluster_name = "aks-devicemanifest-custom"
+# node_count = 5
+# vm_size = "Standard_D8s_v3"

@@ -1,0 +1,184 @@
+# MinIO configuration (using official MinIO Helm chart as dependency)
+minio:
+  mode: distributed
+  replicas: 4
+
+  persistence:
+    enabled: true
+    storageClass: "managed-premium"
+    size: 500Gi
+
+  resources:
+    requests:
+      memory: 2Gi
+      cpu: 1000m
+    limits:
+      memory: 4Gi
+      cpu: 2000m
+
+  ingress:
+    enabled: false
+
+  consoleIngress:
+    enabled: false
+
+  # MinIO credentials (use secrets in production)
+  rootUser: minioadmin
+  rootPassword: minioadmin123
+
+  # Buckets to create on startup
+  buckets:
+    - name: device-files
+      policy: none
+      purge: false
+
+  # Security context
+  securityContext:
+    enabled: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+
+  service:
+    type: ClusterIP
+    port: 9000
+
+# API configuration
+api:
+  enabled: true
+  replicaCount: 3
+
+  image:
+    repository: YOUR_ACR_NAME.azurecr.io/devicemanifest-api-minio
+    pullPolicy: IfNotPresent
+    tag: "latest"
+
+  imagePullSecrets: []
+  nameOverride: ""
+  fullnameOverride: ""
+
+  serviceAccount:
+    create: true
+    annotations: {}
+    name: "devicemanifest-api-minio"
+
+  podAnnotations: {}
+
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    fsGroup: 1000
+
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+      - ALL
+    readOnlyRootFilesystem: true
+
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 8080
+
+  ingress:
+    enabled: false
+    className: ""
+    annotations: {}
+    hosts:
+      - host: chart-example.local
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls: []
+
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+    requests:
+      cpu: 500m
+      memory: 512Mi
+
+  autoscaling:
+    enabled: true
+    minReplicas: 3
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 80
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                    - devicemanifest-api-minio
+            topologyKey: kubernetes.io/hostname
+
+  # Application configuration
+  config:
+    minio:
+      endpoint: "devicemanifest-solution-b-minio:9000"
+      accessKey: "minioadmin"
+      secretKey: "minioadmin123"
+      useSSL: "false"
+      bucketName: "device-files"
+
+  # Environment variables
+  env:
+    - name: ASPNETCORE_ENVIRONMENT
+      value: "Production"
+    - name: ASPNETCORE_URLS
+      value: "http://+:8080"
+    - name: MinIO__Endpoint
+      valueFrom:
+        configMapKeyRef:
+          name: devicemanifest-api-minio-config
+          key: endpoint
+    - name: MinIO__AccessKey
+      valueFrom:
+        secretKeyRef:
+          name: devicemanifest-api-minio-secret
+          key: accessKey
+    - name: MinIO__SecretKey
+      valueFrom:
+        secretKeyRef:
+          name: devicemanifest-api-minio-secret
+          key: secretKey
+    - name: MinIO__UseSSL
+      valueFrom:
+        configMapKeyRef:
+          name: devicemanifest-api-minio-config
+          key: useSSL
+    - name: MinIO__BucketName
+      valueFrom:
+        configMapKeyRef:
+          name: devicemanifest-api-minio-config
+          key: bucketName
+
+  livenessProbe:
+    httpGet:
+      path: /health
+      port: 8080
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+
+  readinessProbe:
+    httpGet:
+      path: /health
+      port: 8080
+    initialDelaySeconds: 10
+    periodSeconds: 5
+    timeoutSeconds: 3
+    failureThreshold: 3

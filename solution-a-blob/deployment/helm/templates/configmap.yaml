@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "devicemanifest-api-blob.fullname" . }}-config
+  labels:
+    {{- include "devicemanifest-api-blob.labels" . | nindent 4 }}
+data:
+  storageAccountName: {{ .Values.config.azure.storageAccountName | quote }}
+  containerName: {{ .Values.config.azure.containerName | quote }}
