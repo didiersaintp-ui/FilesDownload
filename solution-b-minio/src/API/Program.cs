@@ -1,4 +1,5 @@
 using DeviceManifest.Api.Minio.Services;
+using DeviceManifest.Shared;
 using Minio;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,7 +10,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Register MinIO client
-builder.Services.AddSingleton(sp =>
+builder.Services.AddSingleton<IMinioClient>(sp =>
 {
     var configuration = sp.GetRequiredService<IConfiguration>();
     var endpoint = configuration["MinIO:Endpoint"] ?? throw new InvalidOperationException("MinIO:Endpoint not configured");
@@ -29,8 +30,8 @@ builder.Services.AddSingleton(sp =>
     return minioClient.Build();
 });
 
-// Register MinioStorageService
-builder.Services.AddSingleton(sp =>
+// Register MinioStorageService as IStorageService
+builder.Services.AddSingleton<IStorageService>(sp =>
 {
     var configuration = sp.GetRequiredService<IConfiguration>();
     var minioClient = sp.GetRequiredService<IMinioClient>();

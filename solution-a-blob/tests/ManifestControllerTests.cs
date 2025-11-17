@@ -10,13 +10,13 @@ namespace DeviceManifest.Api.Tests;
 
 public class ManifestControllerTests
 {
-    private readonly Mock<BlobStorageService> _mockStorageService;
+    private readonly Mock<IStorageService> _mockStorageService;
     private readonly Mock<ILogger<ManifestController>> _mockLogger;
     private readonly ManifestController _controller;
 
     public ManifestControllerTests()
     {
-        _mockStorageService = new Mock<BlobStorageService>();
+        _mockStorageService = new Mock<IStorageService>();
         _mockLogger = new Mock<ILogger<ManifestController>>();
         _controller = new ManifestController(_mockStorageService.Object, _mockLogger.Object);
     }

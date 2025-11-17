@@ -1,5 +1,5 @@
 using DeviceManifest.Api.Minio.Controllers;
-using DeviceManifest.Api.Minio.Services;
+using DeviceManifest.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -10,13 +10,13 @@ namespace DeviceManifest.Api.Minio.Tests;
 
 public class ManifestControllerTests
 {
-    private readonly Mock<MinioStorageService> _mockStorageService;
+    private readonly Mock<IStorageService> _mockStorageService;
     private readonly Mock<ILogger<ManifestController>> _mockLogger;
     private readonly ManifestController _controller;
 
     public ManifestControllerTests()
     {
-        _mockStorageService = new Mock<MinioStorageService>();
+        _mockStorageService = new Mock<IStorageService>();
         _mockLogger = new Mock<ILogger<ManifestController>>();
         _controller = new ManifestController(_mockStorageService.Object, _mockLogger.Object);
     }

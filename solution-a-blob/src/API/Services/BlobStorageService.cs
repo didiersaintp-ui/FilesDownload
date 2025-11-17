@@ -12,6 +12,7 @@ namespace DeviceManifest.Api.Services;
 /// </summary>
 public class BlobStorageService : IStorageService
 {
+    private readonly BlobServiceClient _blobServiceClient;
     private readonly BlobContainerClient _containerClient;
     private readonly string _storageAccountName;
     private readonly DefaultAzureCredential _credential;
@@ -21,11 +22,11 @@ public class BlobStorageService : IStorageService
         _storageAccountName = storageAccountName;
         _credential = credential;
 
-        var blobServiceClient = new BlobServiceClient(
+        _blobServiceClient = new BlobServiceClient(
             new Uri($"https://{storageAccountName}.blob.core.windows.net"),
             credential);
 
-        _containerClient = blobServiceClient.GetBlobContainerClient(containerName);
+        _containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
     }
 
     public async Task<DeviceManifest.Shared.DeviceManifest> GetManifestAsync(string ceb, int ttlMinutes = 10, CancellationToken cancellationToken = default)
@@ -95,10 +96,8 @@ public class BlobStorageService : IStorageService
     /// </summary>
     private async Task<string> GenerateUserDelegationSasAsync(BlobClient blobClient, int ttlMinutes, CancellationToken cancellationToken)
     {
-        var blobServiceClient = _containerClient.GetParentBlobServiceClient();
-
         // Get user delegation key
-        var userDelegationKey = await blobServiceClient.GetUserDelegationKeyAsync(
+        var userDelegationKey = await _blobServiceClient.GetUserDelegationKeyAsync(
             startsOn: DateTimeOffset.UtcNow,
             expiresOn: DateTimeOffset.UtcNow.AddMinutes(ttlMinutes),
             cancellationToken: cancellationToken);

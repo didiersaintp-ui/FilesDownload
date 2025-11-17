@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using DeviceManifest.Api.Services;
+using DeviceManifest.Shared;
 
 namespace DeviceManifest.Api.Controllers;
 
@@ -7,10 +7,10 @@ namespace DeviceManifest.Api.Controllers;
 [Route("api/[controller]")]
 public class ManifestController : ControllerBase
 {
-    private readonly BlobStorageService _storageService;
+    private readonly IStorageService _storageService;
     private readonly ILogger<ManifestController> _logger;
 
-    public ManifestController(BlobStorageService storageService, ILogger<ManifestController> logger)
+    public ManifestController(IStorageService storageService, ILogger<ManifestController> logger)
     {
         _storageService = storageService;
         _logger = logger;

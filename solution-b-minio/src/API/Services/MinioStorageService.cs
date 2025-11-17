@@ -105,7 +105,7 @@ public class MinioStorageService : IStorageService
     }
 
     /// <summary>
-    /// Get SHA256 from metadata or calculate it
+    /// Get SHA256 from metadata or use ETag as fallback
     /// </summary>
     private async Task<string> GetOrCalculateSha256Async(string objectName, Minio.DataModel.ObjectStat objectStat, CancellationToken cancellationToken)
     {
@@ -115,22 +115,9 @@ public class MinioStorageService : IStorageService
             return storedHash;
         }
 
-        // If not, calculate it (expensive, should be avoided in production)
-        var getArgs = new GetObjectArgs()
-            .WithBucket(_bucketName)
-            .WithObject(objectName)
-            .WithCallbackStream(async (stream) =>
-            {
-                using var sha256 = SHA256.Create();
-                var hashBytes = await sha256.ComputeHashAsync(stream, cancellationToken);
-                return Convert.ToHexString(hashBytes).ToLowerInvariant();
-            });
-
-        var result = string.Empty;
-        await _minioClient.GetObjectAsync(getArgs, cancellationToken);
-
-        // Note: This is a simplified implementation
-        // In production, you should pre-calculate and store SHA256 in metadata
-        return objectStat.ETag.Trim('"'); // Fallback to ETag if SHA256 not available
+        // Fallback to ETag (which is MD5 for MinIO)
+        // NOTE: In production, SHA256 should be pre-calculated and stored in metadata when uploading files
+        // This is just for POC purposes - ETag is sufficient for cache validation
+        return await Task.FromResult(objectStat.ETag.Trim('"'));
     }
 }
