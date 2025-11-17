@@ -1,5 +1,6 @@
 using DeviceManifest.Shared;
 using Minio;
+using Minio.DataModel;
 using Minio.DataModel.Args;
 using System.Security.Cryptography;
 
@@ -107,7 +108,7 @@ public class MinioStorageService : IStorageService
     /// <summary>
     /// Get SHA256 from metadata or use ETag as fallback
     /// </summary>
-    private async Task<string> GetOrCalculateSha256Async(string objectName, Minio.DataModel.ObjectStat objectStat, CancellationToken cancellationToken)
+    private async Task<string> GetOrCalculateSha256Async(string objectName, ObjectStat objectStat, CancellationToken cancellationToken)
     {
         // Check if SHA256 is stored in metadata
         if (objectStat.MetaData?.TryGetValue("x-amz-meta-sha256", out var storedHash) == true)
