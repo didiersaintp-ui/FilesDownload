@@ -62,8 +62,8 @@ if (-not $account) {
     Write-Host "Not logged in to Azure. Running 'az login'..." -ForegroundColor Yellow
     az login
 }
-Write-Host "✓ Logged in to Azure as: $($account.user.name)" -ForegroundColor Green
-Write-Host "✓ Using subscription: $($account.name)" -ForegroundColor Green
+Write-Host "[OK] Logged in to Azure as: $($account.user.name)" -ForegroundColor Green
+Write-Host "[OK] Using subscription: $($account.name)" -ForegroundColor Green
 Write-Host ""
 
 # Initialize Terraform
@@ -72,7 +72,7 @@ Push-Location $terraformPath
 try {
     terraform init
     if ($LASTEXITCODE -ne 0) { throw "Terraform init failed" }
-    Write-Host "✓ Terraform initialized" -ForegroundColor Green
+    Write-Host "[OK] Terraform initialized" -ForegroundColor Green
     Write-Host ""
 
     # Create terraform.tfvars
@@ -88,14 +88,14 @@ tags = {
 "@
 
     Set-Content -Path "terraform.tfvars" -Value $tfvarsContent
-    Write-Host "✓ Created terraform.tfvars" -ForegroundColor Green
+    Write-Host "[OK] Created terraform.tfvars" -ForegroundColor Green
     Write-Host ""
 
     # Plan
     Write-Host "Creating Terraform plan..." -ForegroundColor Yellow
     terraform plan -out=tfplan
     if ($LASTEXITCODE -ne 0) { throw "Terraform plan failed" }
-    Write-Host "✓ Plan created successfully" -ForegroundColor Green
+    Write-Host "[OK] Plan created successfully" -ForegroundColor Green
     Write-Host ""
 
     # Apply
@@ -119,7 +119,7 @@ tags = {
 
     Write-Host ""
     Write-Host "========================================" -ForegroundColor Cyan
-    Write-Host "✓ Infrastructure deployed successfully!" -ForegroundColor Green
+    Write-Host "[OK] Infrastructure deployed successfully!" -ForegroundColor Green
     Write-Host "========================================" -ForegroundColor Cyan
     Write-Host ""
 

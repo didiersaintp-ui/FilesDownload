@@ -54,7 +54,7 @@ if (-not (Get-Command helm -ErrorAction SilentlyContinue)) {
 Write-Host "Logging in to ACR..." -ForegroundColor Yellow
 az acr login --name $AcrName
 if ($LASTEXITCODE -ne 0) { throw "ACR login failed" }
-Write-Host "✓ Logged in to ACR" -ForegroundColor Green
+Write-Host "[OK] Logged in to ACR" -ForegroundColor Green
 Write-Host ""
 
 # Build and push Docker image
@@ -66,13 +66,13 @@ Push-Location $rootPath
 try {
     docker build -f solution-b-minio/src/API/Dockerfile -t "${imageName}:${imageTag}" .
     if ($LASTEXITCODE -ne 0) { throw "Docker build failed" }
-    Write-Host "✓ Docker image built" -ForegroundColor Green
+    Write-Host "[OK] Docker image built" -ForegroundColor Green
     Write-Host ""
 
     Write-Host "Pushing Docker image to ACR..." -ForegroundColor Yellow
     docker push "${imageName}:${imageTag}"
     if ($LASTEXITCODE -ne 0) { throw "Docker push failed" }
-    Write-Host "✓ Docker image pushed" -ForegroundColor Green
+    Write-Host "[OK] Docker image pushed" -ForegroundColor Green
     Write-Host ""
 }
 finally {
@@ -83,14 +83,14 @@ finally {
 Write-Host "Getting AKS credentials..." -ForegroundColor Yellow
 az aks get-credentials --resource-group $ResourceGroup --name $ClusterName --overwrite-existing
 if ($LASTEXITCODE -ne 0) { throw "Failed to get AKS credentials" }
-Write-Host "✓ AKS credentials configured" -ForegroundColor Green
+Write-Host "[OK] AKS credentials configured" -ForegroundColor Green
 Write-Host ""
 
 # Add MinIO Helm repo
 Write-Host "Adding MinIO Helm repository..." -ForegroundColor Yellow
 helm repo add minio https://charts.min.io/
 helm repo update
-Write-Host "✓ MinIO Helm repository added" -ForegroundColor Green
+Write-Host "[OK] MinIO Helm repository added" -ForegroundColor Green
 Write-Host ""
 
 # Deploy with Helm
@@ -106,7 +106,7 @@ try {
         --wait --timeout 10m
 
     if ($LASTEXITCODE -ne 0) { throw "Helm deployment failed" }
-    Write-Host "✓ Helm deployment successful" -ForegroundColor Green
+    Write-Host "[OK] Helm deployment successful" -ForegroundColor Green
     Write-Host ""
 }
 finally {
@@ -114,7 +114,7 @@ finally {
 }
 
 Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "✓ Solution B deployed successfully!" -ForegroundColor Green
+Write-Host "[OK] Solution B deployed successfully!" -ForegroundColor Green
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 

@@ -39,7 +39,7 @@ try {
 finally {
     Pop-Location
 }
-Write-Host "✓ Shared models built successfully" -ForegroundColor Green
+Write-Host "[OK] Shared models built successfully" -ForegroundColor Green
 Write-Host ""
 
 # Build Solution A API
@@ -52,7 +52,7 @@ try {
 finally {
     Pop-Location
 }
-Write-Host "✓ Solution A API built successfully" -ForegroundColor Green
+Write-Host "[OK] Solution A API built successfully" -ForegroundColor Green
 Write-Host ""
 
 # Build Solution B API
@@ -65,7 +65,7 @@ try {
 finally {
     Pop-Location
 }
-Write-Host "✓ Solution B API built successfully" -ForegroundColor Green
+Write-Host "[OK] Solution B API built successfully" -ForegroundColor Green
 Write-Host ""
 
 # Build Device Simulator
@@ -78,9 +78,9 @@ try {
 finally {
     Pop-Location
 }
-Write-Host "✓ Device Simulator built successfully" -ForegroundColor Green
+Write-Host "[OK] Device Simulator built successfully" -ForegroundColor Green
 Write-Host ""
 
 Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "✓ All projects built successfully!" -ForegroundColor Green
+Write-Host "[OK] All projects built successfully!" -ForegroundColor Green
 Write-Host "========================================" -ForegroundColor Cyan

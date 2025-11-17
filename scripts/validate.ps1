@@ -44,16 +44,16 @@ if (Test-Command dotnet) {
     $dotnetVersion = dotnet --version
     if ($dotnetVersion -match '^8\.') {
         Add-ValidationResult -Name ".NET 8 SDK" -Success $true -Message "Version: $dotnetVersion"
-        Write-Host "✓ .NET 8 SDK found: $dotnetVersion" -ForegroundColor Green
+        Write-Host "[OK] .NET 8 SDK found: $dotnetVersion" -ForegroundColor Green
     }
     else {
         Add-ValidationResult -Name ".NET 8 SDK" -Success $false -Message "Found version $dotnetVersion, but .NET 8 is required"
-        Write-Host "✗ .NET 8 SDK not found (found $dotnetVersion)" -ForegroundColor Red
+        Write-Host "[FAIL] .NET 8 SDK not found (found $dotnetVersion)" -ForegroundColor Red
     }
 }
 else {
     Add-ValidationResult -Name ".NET 8 SDK" -Success $false -Message "Not installed"
-    Write-Host "✗ .NET SDK not found" -ForegroundColor Red
+    Write-Host "[FAIL] .NET SDK not found" -ForegroundColor Red
 }
 
 # Check Docker
@@ -61,11 +61,11 @@ Write-Host "Checking Docker..." -ForegroundColor Yellow
 if (Test-Command docker) {
     $dockerVersion = docker --version
     Add-ValidationResult -Name "Docker" -Success $true -Message $dockerVersion
-    Write-Host "✓ Docker found: $dockerVersion" -ForegroundColor Green
+    Write-Host "[OK] Docker found: $dockerVersion" -ForegroundColor Green
 }
 else {
     Add-ValidationResult -Name "Docker" -Success $false -Message "Not installed"
-    Write-Host "✗ Docker not found" -ForegroundColor Red
+    Write-Host "[FAIL] Docker not found" -ForegroundColor Red
 }
 
 # Check Azure CLI
@@ -73,11 +73,11 @@ Write-Host "Checking Azure CLI..." -ForegroundColor Yellow
 if (Test-Command az) {
     $azVersion = az version --query '\"azure-cli\"' -o tsv
     Add-ValidationResult -Name "Azure CLI" -Success $true -Message "Version: $azVersion"
-    Write-Host "✓ Azure CLI found: $azVersion" -ForegroundColor Green
+    Write-Host "[OK] Azure CLI found: $azVersion" -ForegroundColor Green
 }
 else {
     Add-ValidationResult -Name "Azure CLI" -Success $false -Message "Not installed"
-    Write-Host "✗ Azure CLI not found" -ForegroundColor Red
+    Write-Host "[FAIL] Azure CLI not found" -ForegroundColor Red
 }
 
 # Check Terraform
@@ -85,11 +85,11 @@ Write-Host "Checking Terraform..." -ForegroundColor Yellow
 if (Test-Command terraform) {
     $tfVersion = terraform version -json | ConvertFrom-Json | Select-Object -ExpandProperty terraform_version
     Add-ValidationResult -Name "Terraform" -Success $true -Message "Version: $tfVersion"
-    Write-Host "✓ Terraform found: $tfVersion" -ForegroundColor Green
+    Write-Host "[OK] Terraform found: $tfVersion" -ForegroundColor Green
 }
 else {
     Add-ValidationResult -Name "Terraform" -Success $false -Message "Not installed"
-    Write-Host "✗ Terraform not found" -ForegroundColor Red
+    Write-Host "[FAIL] Terraform not found" -ForegroundColor Red
 }
 
 # Check Helm
@@ -97,11 +97,11 @@ Write-Host "Checking Helm..." -ForegroundColor Yellow
 if (Test-Command helm) {
     $helmVersion = helm version --short
     Add-ValidationResult -Name "Helm" -Success $true -Message $helmVersion
-    Write-Host "✓ Helm found: $helmVersion" -ForegroundColor Green
+    Write-Host "[OK] Helm found: $helmVersion" -ForegroundColor Green
 }
 else {
     Add-ValidationResult -Name "Helm" -Success $false -Message "Not installed"
-    Write-Host "✗ Helm not found" -ForegroundColor Red
+    Write-Host "[FAIL] Helm not found" -ForegroundColor Red
 }
 
 # Check kubectl
@@ -109,11 +109,11 @@ Write-Host "Checking kubectl..." -ForegroundColor Yellow
 if (Test-Command kubectl) {
     $kubectlVersion = kubectl version --client --short 2>$null
     Add-ValidationResult -Name "kubectl" -Success $true -Message $kubectlVersion
-    Write-Host "✓ kubectl found: $kubectlVersion" -ForegroundColor Green
+    Write-Host "[OK] kubectl found: $kubectlVersion" -ForegroundColor Green
 }
 else {
     Add-ValidationResult -Name "kubectl" -Success $false -Message "Not installed"
-    Write-Host "✗ kubectl not found" -ForegroundColor Red
+    Write-Host "[FAIL] kubectl not found" -ForegroundColor Red
 }
 
 # Check project structure
@@ -134,10 +134,10 @@ $rootPath = Split-Path -Parent $PSScriptRoot
 foreach ($path in $requiredPaths) {
     $fullPath = Join-Path $rootPath $path
     if (Test-Path $fullPath) {
-        Write-Host "✓ $path" -ForegroundColor Green
+        Write-Host "[OK] $path" -ForegroundColor Green
     }
     else {
-        Write-Host "✗ $path missing" -ForegroundColor Red
+        Write-Host "[FAIL] $path missing" -ForegroundColor Red
         Add-ValidationResult -Name "Project structure" -Success $false -Message "$path missing"
     }
 }
@@ -169,5 +169,5 @@ if ($failedCount -gt 0) {
 }
 
 Write-Host ""
-Write-Host "✓ All validations passed!" -ForegroundColor Green
+Write-Host "[OK] All validations passed!" -ForegroundColor Green
 Write-Host "You're ready to build and deploy the project." -ForegroundColor Green

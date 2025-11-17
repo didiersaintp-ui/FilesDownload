@@ -72,7 +72,7 @@ if (-not (Test-Path "$simulatorPath/bin/Release/net8.0/DeviceSimulator.dll")) {
     finally {
         Pop-Location
     }
-    Write-Host "✓ Build complete" -ForegroundColor Green
+    Write-Host "[OK] Build complete" -ForegroundColor Green
     Write-Host ""
 }
 
@@ -111,7 +111,7 @@ finally {
 
 Write-Host ""
 Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "✓ Simulation complete!" -ForegroundColor Green
+Write-Host "[OK] Simulation complete!" -ForegroundColor Green
 Write-Host "========================================" -ForegroundColor Cyan
 
 if ($OutputFile -and (Test-Path $OutputFile)) {

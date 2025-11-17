@@ -37,11 +37,11 @@ foreach ($project in $testProjects) {
     dotnet test $project --verbosity minimal
 
     if ($LASTEXITCODE -eq 0) {
-        Write-Host "✓ Tests passed for $projectName" -ForegroundColor Green
+        Write-Host "[OK] Tests passed for $projectName" -ForegroundColor Green
         $passedTests++
     }
     else {
-        Write-Host "✗ Tests failed for $projectName" -ForegroundColor Red
+        Write-Host "[FAIL] Tests failed for $projectName" -ForegroundColor Red
         $failedTests++
     }
 
@@ -61,4 +61,4 @@ if ($failedTests -gt 0) {
 }
 
 Write-Host ""
-Write-Host "✓ All tests passed!" -ForegroundColor Green
+Write-Host "[OK] All tests passed!" -ForegroundColor Green
